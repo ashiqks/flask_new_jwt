@@ -32,25 +32,7 @@ db.Model.metadata.reflect(db.engine)
 class Banks(db.Model):
     __table__ = db.Model.metadata.tables['MyData']
     
-    ifsc = db.Column(db.String, unique=True, primary_key=True)
-    bank_id = db.Column(db.Integer)
-    branch = db.Column(db.String(255), nullable=False)
-    address = db.Column(db.String(255), nullable=False)
-    city = db.Column(db.String(255), nullable=False)
-    district = db.Column(db.String(255), nullable=False)
-    state = db.Column(db.String(255), nullable=False)
-    bank_name = db.Column(db.String(255), nullable=False)
-    
-    def __init__(self, ifsc=None, bank_id=None, branch=None, address=None, city=None, district=None, state=None, bank_name=None):
-        self.ifsc = ifsc
-        self.bank_id = bank_id
-        self.branch = branch
-        self.address = address
-        self.city = city
-        self.district = district
-        self.state = state
-        self.bank_name = bank_name
-    
+       
     @classmethod    
     def branch_details(cls, bank, city, offset_value, limit_value):
         return cls.query.filter_by(bank_name=bank).filter_by(city=city).offset(offset_value).limit(limit_value).all()
