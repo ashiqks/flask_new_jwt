@@ -1,19 +1,8 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 import numpy as np
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_restful import Resource, reqparse, Api
 from flask_jwt_extended import  jwt_required, JWTManager, create_access_token
-
-import logging
-
-app.logger.addHandler(logging.StreamHandler(sys.stdout))
-app.logger.setLevel(logging.ERROR)
 
 import datetime
 
@@ -24,12 +13,12 @@ database = 'd9mkrcud8u94f5'
 host = 'ec2-54-247-72-30.eu-west-1.compute.amazonaws.com'
 user = 'fqlcmcljmrgtpp'
 pwd = '5a00cc2243556bdcf2159b761696cfe097b222445ffef3b39f59ee45bf79d0dc'
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{user}:{pwd}@{host}/{database}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://{user}:{pwd}@{host}/{database}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['JWT_SECRET_KEY'] = 'super-secret'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=5)
-#JWT
+
 jwt = JWTManager(app)
 
 db.init_app(app)
@@ -42,6 +31,25 @@ db.Model.metadata.reflect(db.engine)
 
 class Banks(db.Model):
     __table__ = db.Model.metadata.tables['MyData']
+    
+    ifsc = db.Column(db.String, unique=True, primary_key=True)
+    bank_id = db.Column(db.Integer)
+    branch = db.Column(db.String(255), nullable=False)
+    address = db.Column(db.String(255), nullable=False)
+    city = db.Column(db.String(255), nullable=False)
+    district = db.Column(db.String(255), nullable=False)
+    state = db.Column(db.String(255), nullable=False)
+    bank_name = db.Column(db.String(255), nullable=False)
+    
+    def __init__(self, ifsc=None, bank_id=None, branch=None, address=None, city=None, district=None, state=None, bank_name=None):
+        self.ifsc = ifsc
+        self.bank_id = bank_id
+        self.branch = branch
+        self.address = address
+        self.city = city
+        self.district = district
+        self.state = state
+        self.bank_name = bank_name
     
     @classmethod    
     def branch_details(cls, bank, city, offset_value, limit_value):
@@ -108,4 +116,3 @@ api.add_resource(LOGIN, '/login')
 
 if __name__ == '__main__':
     app.run(debug=True)
-
