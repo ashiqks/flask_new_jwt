@@ -10,6 +10,11 @@ from flask import Flask
 from flask_restful import Resource, reqparse, Api
 from flask_jwt_extended import  jwt_required, JWTManager, create_access_token
 
+import logging
+
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
+
 import datetime
 
 db = SQLAlchemy()
